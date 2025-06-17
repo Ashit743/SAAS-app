@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import userRoute from './routes/users.routes';
+import userRoute from './routes/auth.routes';
 import { globalErrorHandler } from './middleware/globalErrorHandler';
 
 
@@ -13,7 +13,7 @@ app.use(express.json());
 
 
 // routes
-app.use('/api/user/', userRoute);
+app.use('/api/v1', userRoute);
 
 // Global error handler
 app.use(globalErrorHandler);
