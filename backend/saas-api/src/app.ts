@@ -15,11 +15,6 @@ app.use(express.json());
 // routes
 app.use('/api/user/', userRoute);
 
-app.get('/', (req, res) => {
-  res.send('Hello Worlddddddd!');
-});
-
-
 // Global error handler
 app.use(globalErrorHandler);
 

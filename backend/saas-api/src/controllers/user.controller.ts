@@ -28,7 +28,13 @@ export const registerUser = async (
   });
 };
 
-
+/**
+ * Controller to handle user login
+ * @param req - Express request object
+ * @param res - Express response object
+ * @returns JSON response with success message, token, and user details
+ * @throws {Error} If login fails due to invalid credentials
+ */
 export const loginUser = async (req: Request, res: Response): Promise<any> => {
     const { email, password } = req.body;
     const { userResponse, token } = await loginUserService(email, password);
