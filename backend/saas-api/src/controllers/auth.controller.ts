@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import {
   loginUserService,
   registerUserService,
-} from "../services/user.service";
+} from "../services/local.service";
 
 /**
  * Controller to handle user registration
