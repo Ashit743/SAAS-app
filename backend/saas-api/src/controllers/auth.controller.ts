@@ -3,6 +3,7 @@ import {
   loginUserService,
   registerUserService,
 } from "../services/local.service";
+import { googleClient } from "../config/google";
 
 /**
  * Controller to handle user registration
@@ -45,3 +46,20 @@ export const loginUser = async (req: Request, res: Response): Promise<any> => {
       .status(200)
       .json({ message: "Login successful", token, userResponse });
 };
+
+/**
+ * Controller to redirect user to Google OAuth2 authorization URL
+ * @param req - Express request object
+ * @param res - Express response object
+ * @returns Redirects user to Google authorization page
+ */
+export const redirectToGoogle = (req: Request, res: Response): void => {
+  const authorizedUrl = googleClient.generateAuthUrl({
+    access_type: "offline",
+    scope: ["email", "profile","openid"],
+    prompt: "consent",
+  });
+
+  console.log(authorizedUrl)
+  return res.redirect(authorizedUrl);
+}
