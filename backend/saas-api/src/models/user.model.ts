@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
 import bcrypt from "bcryptjs";
+import { InternalServerError } from "../utils/error";
 
 
 const userSchema = new Schema({
@@ -29,13 +30,14 @@ const userSchema = new Schema({
   },
 });
 
-userSchema.pre("save", async function () {
-    if(!this.isModified("password")) return;
+userSchema.pre("save", async function (next) {
+    if(!this.isModified("password")) return next(); // if they are not modifying the password, skip hashing
     try {
         const salt = await bcrypt.genSalt(10);
         this.password =  await bcrypt.hash(this.password, salt);
+        next();
     } catch (error) {
-        throw new Error("Error hashing password");
+        next(InternalServerError("Error hashing password"));
     }
 });
 

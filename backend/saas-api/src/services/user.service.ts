@@ -3,6 +3,7 @@ import User from "../models/user.model";
 import jwt from "jsonwebtoken";
 import { RegisterNewUser } from "../types/user.types";
 import bcrypt from "bcryptjs";
+import { Conflict, NotFound, Unauthorized } from "../utils/error";
 
 
 
@@ -11,7 +12,7 @@ export const registerUserService = async ({email, password, firstName, lastName}
     
     const existingUser = await User.findOne({ email }); 
     if (existingUser) {
-      throw new Error("User with this email already exists");
+      throw Conflict("User already exists with this email");
     }
     const newUser = new User({
       email,
@@ -20,7 +21,6 @@ export const registerUserService = async ({email, password, firstName, lastName}
       lastName,
     });
     await newUser.save();
-
     // Create a response object without the password
     const userResponse = {
       id: newUser._id,
@@ -28,20 +28,17 @@ export const registerUserService = async ({email, password, firstName, lastName}
       firstName: newUser.firstName,
       lastName: newUser.lastName,
     };
-
-
-
-    return { userResponse }; //same as {userResponse: userResponse, token: token}
+    return { userResponse };
 }
 
 export const loginUserService = async (email: string, password: string) => {
   const user = await User.findOne({ email });
   if (!user) {
-    throw new Error("User not found");
+    throw NotFound("User not found with this email");
   }
   const isPasswordValid = await bcrypt.compare(password, user.password);
   if (!isPasswordValid) {
-    throw new Error("Invalid password");
+    throw Unauthorized("Invalid password");
   }
   if (!JWT_SECRET) {
     throw new Error("JWT_SECRET environment variable is not set");
