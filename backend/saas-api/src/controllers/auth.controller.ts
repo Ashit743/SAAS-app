@@ -59,7 +59,22 @@ export const redirectToGoogle = (req: Request, res: Response): void => {
     scope: ["email", "profile","openid"],
     prompt: "consent",
   });
-
-  console.log(authorizedUrl)
   return res.redirect(authorizedUrl);
+} 
+
+
+export const handleGoogleCallback = async (req: Request, res: Response): Promise<any> => {
+  const { code } = req.query;
+  if (!code) {
+    return res.status(400).json({ message: "Authorization code is missing" });
+  }
+  try{
+    const { tokens } = await googleClient.getToken(code as string);
+    console.log("Google tokens:", tokens);
+
+  }
+  catch (error) {
+    return res.status(500).json({ message: "Internal server error", error });
+  }
+
 }
